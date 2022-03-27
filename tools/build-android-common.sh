@@ -16,14 +16,16 @@
 
 source ./build-common.sh
 
-if [ -z ${arch+x} ]; then 
-  arch=("arm" "arm64" "x86" "x86_64")
+export ANDROID_NDK_ROOT=$HOME/Library/Android/sdk/ndk/21.4.7075529
+
+if [ -z ${arch+x} ]; then
+  arch=("arm" "arm64" "x86_64")
 fi
-if [ -z ${abi+x} ]; then 
-  abi=("armeabi-v7a" "arm64-v8a" "x86" "x86_64")
+if [ -z ${abi+x} ]; then
+  abi=("armeabi-v7a" "arm64-v8a" "x86_64")
 fi
-if [ -z ${api+x} ]; then 
-  api=23
+if [ -z ${api+x} ]; then
+  api=21
 fi
 
 export PLATFORM_TYPE="Android"
@@ -175,6 +177,7 @@ function set_android_cpu_feature() {
   local api=$3
   case ${arch} in
   arm-v7a | arm-v7a-neon)
+  echo "AndroidApi------------ ${api}"
     export CFLAGS="-march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=softfp -Wno-unused-function -fno-integrated-as -fstrict-aliasing -fPIC -DANDROID -D__ANDROID_API__=${api} -Os -ffunction-sections -fdata-sections $(get_common_includes)"
     export CXXFLAGS="-std=c++14 -Os -ffunction-sections -fdata-sections"
     export LDFLAGS="-march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=softfp -Wl,--fix-cortex-a8 -Wl,--gc-sections -Os -ffunction-sections -fdata-sections $(get_common_linked_libraries ${api} ${arch})"
